@@ -5,13 +5,13 @@ A Python package for estimating membrane surfaces from 3D protein maps using hei
 ## Quick Start
 Open your terminal and enter this to install the package:
 ```bash
-pip install git+https://github.com/lucapanconi/membrane_separator.git
+pip install git+https://github.com/lucapanconi/separate_membranes.git
 ```
 
 Create a Python script which contains the following lines:
 
 ```python
-from membrane_separator import separate_membranes
+from separate_membranes import separate_membranes
 
 # Process a directory of CSV files
 separate_membranes("path/to/your/csv/files")
@@ -26,8 +26,8 @@ And that's it! The function will:
 ## Project Structure
 
 ```
-membrane_separator/
-├── membrane_separator/          # Core package
+separate_membranes/
+├── separate_membranes/          # Core package
 │   ├── __init__.py
 │   ├── separate_membranes.py    # Main user function
 │   ├── data_io.py
@@ -57,7 +57,7 @@ pip install -r requirements.txt
 
 3. Implement:
 ```python
-from membrane_separator import separate_membranes
+from separate_membranes import separate_membranes
 
 # Process a directory of CSV files
 results = separate_membranes("path/to/your/csv/files")
@@ -78,7 +78,7 @@ results = separate_membranes(
 )
 ```
 
-Alternatively, you can find this pipeline in `membrane_separator.ipynb`.
+Alternatively, you can find this pipeline in `separate_membranes_example.ipynb`.
 
 You can customize the behavior of the `separate_membranes` function by supplying any of the following parameters:
 
