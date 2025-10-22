@@ -2,10 +2,6 @@
 
 A Python package for estimating membrane surfaces from 3D protein maps using height-field pair fitting with cubic polynomials.
 
-+ What are the inputs?
-+ What are the outputs?
-+ Advanced: changing parameters of the surface-fitting algorithm.
-
 ## Quick Start
 Open your terminal and enter this to install the package:
 ```bash
@@ -81,6 +77,8 @@ results = separate_membranes(
     alpha=1e-2
 )
 ```
+
+Alternatively, you can find this pipeline in `membrane_separator.ipynb`.
 
 You can customize the behavior of the `separate_membranes` function by supplying any of the following parameters:
 
