@@ -1,5 +1,5 @@
 """
-Setup script for membrane_separator package.
+Setup script for separate_membranes package.
 """
 
 from setuptools import setup, find_packages
@@ -15,14 +15,14 @@ def read_requirements():
         return [line.strip() for line in fh if line.strip() and not line.startswith("#")]
 
 setup(
-    name="membrane_separator",
+    name="separate_membranes",
     version="1.0.0",
     author="Luca Panconi",
     author_email="",
     description="Membrane surface separation using height-field pair fitting with cubic polynomials",
     long_description=read_readme(),
     long_description_content_type="text/markdown",
-    url="https://github.com/yourusername/membrane_separator",
+    url="https://github.com/lucapanconi/separate_membranes",
     packages=find_packages(),
     classifiers=[
         "Development Status :: 4 - Beta",
@@ -48,7 +48,7 @@ setup(
     },
     entry_points={
         "console_scripts": [
-            "membrane-separator=membrane_separator.cli:main",
+            "separate-membranes=separate_membranes.cli:main",
         ],
     },
     include_package_data=True,

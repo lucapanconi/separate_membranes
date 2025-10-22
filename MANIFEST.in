@@ -2,7 +2,7 @@ include README.md
 include LICENSE
 include requirements.txt
 include pyproject.toml
-recursive-include membrane_separator *.py
+recursive-include separate_membranes *.py
 global-exclude *.pyc
 global-exclude __pycache__
 global-exclude .git*
