@@ -1,4 +1,4 @@
-# Membrane Separator
+# Separate Membranes
 
 A Python package for estimating membrane surfaces from 3D protein maps using height-field pair fitting with cubic polynomials.
 
