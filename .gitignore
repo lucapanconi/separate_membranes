@@ -21,6 +21,7 @@ plots
 results
 sdist/
 var/
+validation
 wheels/
 share/python-wheels/
 *.egg-info/
