@@ -31,7 +31,7 @@ CONTINUE_LAST = False
 
 D_MAX_VALUES = [20, 40, 60, 80, 100]
 N_VALUES = [50, 100, 150, 200, 250]
-DENSITY_AUGMENT_ORDERS = [1, 2, 3]
+DENSITY_AUGMENT_ORDERS = [1, 2, 3, 4, 5]
 LAT_SIGMA_VALUES = [5, 10, 15, 20, 25]
 AX_SIGMA_VALUES = [5, 10, 15, 20, 25]
 DELTA_VALUES = [20, 40, 60, 80, 100]
@@ -636,8 +636,19 @@ def plot_3d_prediction(points: np.ndarray, pred_labels: np.ndarray,
 def create_summary_plots(results_df: pd.DataFrame, output_dir: Path):
     """Create summary plots for validation results."""
     # Set style
-    sns.set_style("whitegrid")
+    plt.style.use('seaborn-v0_8-talk')
     plt.rcParams['figure.figsize'] = (12, 8)
+    
+    # Define consistent colors for each parameter
+    param_colors = {
+        'D_max': '#1f77b4',          # Blue
+        'N': '#ff7f0e',              # Orange
+        'density_augment_order': '#2ca02c',  # Green
+        'Lat_Sigma': '#d62728',      # Red
+        'Ax_Sigma': '#9467bd',       # Purple
+        'Delta': '#8c564b',          # Brown
+        'Outliers': '#e377c2'        # Pink
+    }
     
     # Parameters to plot
     param_names = ['D_max', 'N', 'density_augment_order', 'Lat_Sigma', 'Ax_Sigma', 'Delta', 'Outliers']
@@ -645,6 +656,9 @@ def create_summary_plots(results_df: pd.DataFrame, output_dir: Path):
     for param in param_names:
         if param not in results_df.columns:
             continue
+        
+        # Get color for this parameter
+        color = param_colors.get(param, '#1f77b4')
         
         # Group by parameter value
         grouped = results_df.groupby(param).agg({
@@ -659,37 +673,44 @@ def create_summary_plots(results_df: pd.DataFrame, output_dir: Path):
         # Plot ARI
         fig, ax = plt.subplots()
         ax.errorbar(grouped[param], grouped['ARI_mean'], yerr=grouped['ARI_std'],
-                   marker='o', capsize=5, capthick=2)
+                   marker='o', capsize=5, capthick=2, color=color, linewidth=2, markersize=8)
         ax.set_xlabel(param)
         ax.set_ylabel('Adjusted Rand Index')
         ax.set_title(f'ARI vs {param}')
+        ax.set_ylim(0, 1)  # ARI is bounded between 0 and 1
         ax.grid(True, alpha=0.3)
         plt.tight_layout()
-        plt.savefig(output_dir / f'ARI_vs_{param}.png', dpi=300)
+        plt.savefig(output_dir / f'ARI_vs_{param}.png', dpi=300, bbox_inches='tight')
         plt.close()
         
         # Plot RMSE
         fig, ax = plt.subplots()
         ax.errorbar(grouped[param], grouped['RMSE_mean'], yerr=grouped['RMSE_std'],
-                   marker='o', capsize=5, capthick=2, color='orange')
+                   marker='o', capsize=5, capthick=2, color=color, linewidth=2, markersize=8)
         ax.set_xlabel(param)
         ax.set_ylabel('RMSE (averaged over both membranes)')
         ax.set_title(f'RMSE vs {param}')
+        # Set lower bound to 0
+        ylim = ax.get_ylim()
+        ax.set_ylim(0, ylim[1])
         ax.grid(True, alpha=0.3)
         plt.tight_layout()
-        plt.savefig(output_dir / f'RMSE_vs_{param}.png', dpi=300)
+        plt.savefig(output_dir / f'RMSE_vs_{param}.png', dpi=300, bbox_inches='tight')
         plt.close()
         
         # Plot gap difference
         fig, ax = plt.subplots()
         ax.errorbar(grouped[param], grouped['gap_diff_mean'], yerr=grouped['gap_diff_std'],
-                   marker='o', capsize=5, capthick=2, color='green')
+                   marker='o', capsize=5, capthick=2, color=color, linewidth=2, markersize=8)
         ax.set_xlabel(param)
         ax.set_ylabel('Gap Difference (|true - found|)')
         ax.set_title(f'Gap Difference vs {param}')
+        # Set lower bound to 0
+        ylim = ax.get_ylim()
+        ax.set_ylim(0, ylim[1])
         ax.grid(True, alpha=0.3)
         plt.tight_layout()
-        plt.savefig(output_dir / f'GapDiff_vs_{param}.png', dpi=300)
+        plt.savefig(output_dir / f'GapDiff_vs_{param}.png', dpi=300, bbox_inches='tight')
         plt.close()
 
 
