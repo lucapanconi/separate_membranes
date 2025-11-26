@@ -6,8 +6,9 @@ import json
 import warnings
 from typing import Union, Dict, Any
 
-from .data_io import load_point_cloud
+from .data_io import load_point_cloud, standardise_points
 from .alternating_fit import alternating_surface_fit
+from .design_matrix import cubic_design_matrix
 
 
 def separate_membranes(
@@ -65,6 +66,9 @@ def separate_membranes(
         'files_processed': 0,
         'errors': []
     }
+    
+    # Collect detailed statistics for CSV output
+    file_statistics = []
     
     if isinstance(data, pd.DataFrame):
         csv_files = [('dataframe', data)]
@@ -141,6 +145,40 @@ def separate_membranes(
             summary_stats['total_lower'] += np.sum(labels_full == 0)
             summary_stats['total_outliers'] += np.sum(labels_full == -1)
             
+            filtered_pts = result["filtered_points"]
+            labels_filtered = result["labels_filtered"]
+            means = np.array(model['means'])
+            stds = np.array(model['stds'])
+            
+            theta_top = np.array(model['theta_top'])
+            theta_bottom = np.array(model['theta_bottom'])
+            
+            pts_norm, _, _ = standardise_points(filtered_pts)
+            x_norm, y_norm = pts_norm[:, 0], pts_norm[:, 1]
+            A = cubic_design_matrix(x_norm, y_norm)
+            
+            z_upper_norm = A @ theta_top
+            z_lower_norm = A @ theta_bottom
+            
+            z_upper = z_upper_norm * stds[2] + means[2]
+            z_lower = z_lower_norm * stds[2] + means[2]
+            
+            D_max_upper = float(z_upper.max() - z_upper.min())
+            D_max_lower = float(z_lower.max() - z_lower.min())
+            
+            Delta_norm = model['Delta_norm']
+            Delta = Delta_norm * stds[2]
+            
+            file_stat = {
+                'file': file_name,
+                'D_max_upper': D_max_upper,
+                'D_max_lower': D_max_lower,
+                'N': len(df),
+                'Delta': Delta,
+                'Outliers': int(np.sum(labels_full == -1))
+            }
+            file_statistics.append(file_stat)
+            
             print(f"  ✓ Saved: {out_csv.name}, {out_json.name}")
             print(f"  Points: {len(df)} total, {np.sum(labels_full >= 0)} kept, {np.sum(labels_full == -1)} outliers")
             print(f"  Upper: {np.sum(labels_full == 1)}, Lower: {np.sum(labels_full == 0)}")
@@ -166,11 +204,34 @@ def separate_membranes(
     if plots_timestamped:
         print(f"Plots saved to: {plots_timestamped}")
     
+    if file_statistics:
+        stats_df = pd.DataFrame(file_statistics)
+        
+        avg_stats = {
+            'file': 'AVERAGE',
+            'D_max_upper': stats_df['D_max_upper'].mean(),
+            'D_max_lower': stats_df['D_max_lower'].mean(),
+            'N': stats_df['N'].mean(),
+            'Delta': stats_df['Delta'].mean(),
+            'Outliers': stats_df['Outliers'].mean()
+        }
+        stats_df = pd.concat([stats_df, pd.DataFrame([avg_stats])], ignore_index=True)
+        
+        stats_csv_path = results_timestamped / 'summary_statistics.csv'
+        stats_df.to_csv(stats_csv_path, index=False)
+        print(f"\nSummary statistics saved to: {stats_csv_path}")
+        print(f"Average D_max_upper: {avg_stats['D_max_upper']:.2f}")
+        print(f"Average D_max_lower: {avg_stats['D_max_lower']:.2f}")
+        print(f"Average N: {avg_stats['N']:.1f}")
+        print(f"Average Delta: {avg_stats['Delta']:.2f}")
+        print(f"Average Outliers: {avg_stats['Outliers']:.1f}")
+    
     return {
         'results_dir': results_timestamped,
         'plots_dir': plots_timestamped,
         'processed_files': processed_files,
-        'summary': summary_stats
+        'summary': summary_stats,
+        'file_statistics': file_statistics if file_statistics else None
     }
 
 

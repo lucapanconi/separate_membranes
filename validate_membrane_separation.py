@@ -639,7 +639,7 @@ def create_summary_plots(results_df: pd.DataFrame, output_dir: Path):
     plt.style.use('seaborn-v0_8-talk')
     plt.rcParams['figure.figsize'] = (12, 8)
     
-    # Define consistent colors for each parameter
+    # Define colors for each parameter
     param_colors = {
         'D_max': '#1f77b4',          # Blue
         'N': '#ff7f0e',              # Orange
