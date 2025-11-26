@@ -29,8 +29,8 @@ from separate_membranes.data_io import standardise_points
 # Continue from last run instead of creating new folder
 CONTINUE_LAST = False
 
-D_MAX_VALUES = [20, 40, 60, 80, 100]
-N_VALUES = [50, 100, 150, 200, 250]
+D_MAX_VALUES = [50, 100, 150, 200, 250]
+N_VALUES = [500, 1000, 1500, 2000, 2500]
 DENSITY_AUGMENT_ORDERS = [1, 2, 3, 4, 5]
 LAT_SIGMA_VALUES = [5, 10, 15, 20, 25]
 AX_SIGMA_VALUES = [5, 10, 15, 20, 25]
@@ -650,6 +650,17 @@ def create_summary_plots(results_df: pd.DataFrame, output_dir: Path):
         'Outliers': '#e377c2'        # Pink
     }
     
+    # Define reference values for vertical lines
+    reference_values = {
+        'D_max': (184.65352159975933 + 150.75916131010277) / 2,
+        'N': 1891.4,
+        'Delta': 100.72461722740061,
+        'Outliers': (1891.4 - 50.3) / 1891.4
+    }
+    
+    # Convert Outliers to percentage (0-100 scale) if needed
+    reference_values['Outliers'] = reference_values['Outliers'] * 100
+    
     # Parameters to plot
     param_names = ['D_max', 'N', 'density_augment_order', 'Lat_Sigma', 'Ax_Sigma', 'Delta', 'Outliers']
     
@@ -677,7 +688,11 @@ def create_summary_plots(results_df: pd.DataFrame, output_dir: Path):
         ax.set_xlabel(param)
         ax.set_ylabel('Adjusted Rand Index')
         ax.set_title(f'ARI vs {param}')
-        ax.set_ylim(0, 1)  # ARI is bounded between 0 and 1
+        ax.set_ylim(0, 1)
+        if param in reference_values:
+            ax.axvline(x=reference_values[param], color='black', linestyle='--', 
+                      linewidth=1.5, alpha=0.7, label=f'Reference: {reference_values[param]:.2f}')
+            ax.legend()
         ax.grid(True, alpha=0.3)
         plt.tight_layout()
         plt.savefig(output_dir / f'ARI_vs_{param}.png', dpi=300, bbox_inches='tight')
@@ -690,9 +705,12 @@ def create_summary_plots(results_df: pd.DataFrame, output_dir: Path):
         ax.set_xlabel(param)
         ax.set_ylabel('RMSE (averaged over both membranes)')
         ax.set_title(f'RMSE vs {param}')
-        # Set lower bound to 0
         ylim = ax.get_ylim()
         ax.set_ylim(0, ylim[1])
+        if param in reference_values:
+            ax.axvline(x=reference_values[param], color='black', linestyle='--', 
+                      linewidth=1.5, alpha=0.7, label=f'Reference: {reference_values[param]:.2f}')
+            ax.legend()
         ax.grid(True, alpha=0.3)
         plt.tight_layout()
         plt.savefig(output_dir / f'RMSE_vs_{param}.png', dpi=300, bbox_inches='tight')
@@ -705,9 +723,12 @@ def create_summary_plots(results_df: pd.DataFrame, output_dir: Path):
         ax.set_xlabel(param)
         ax.set_ylabel('Gap Difference (|true - found|)')
         ax.set_title(f'Gap Difference vs {param}')
-        # Set lower bound to 0
         ylim = ax.get_ylim()
         ax.set_ylim(0, ylim[1])
+        if param in reference_values:
+            ax.axvline(x=reference_values[param], color='black', linestyle='--', 
+                      linewidth=1.5, alpha=0.7, label=f'Reference: {reference_values[param]:.2f}')
+            ax.legend()
         ax.grid(True, alpha=0.3)
         plt.tight_layout()
         plt.savefig(output_dir / f'GapDiff_vs_{param}.png', dpi=300, bbox_inches='tight')
