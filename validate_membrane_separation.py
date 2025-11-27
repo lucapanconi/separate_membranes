@@ -34,8 +34,8 @@ N_VALUES = [250, 500, 750, 1000]
 DENSITY_AUGMENT_ORDERS = [1, 3, 5]
 LAT_SIGMA_VALUES = [5, 10, 15, 20, 25]
 AX_SIGMA_VALUES = [5, 10, 15, 20, 25]
-DELTA_VALUES = [20, 40, 60, 80, 100]
-OUTLIERS_VALUES = [10, 20, 30, 40, 50]
+DELTA_VALUES = [40, 80, 120, 160, 200]
+OUTLIERS_VALUES = [5, 10, 15, 20, 25]
 ITERATIONS = list(range(5))
 
 # Default parameters
@@ -663,7 +663,7 @@ def create_summary_plots(results_df: pd.DataFrame, output_dir: Path):
         'D_max': (184.65352159975933 + 150.75916131010277) / 2,
         'N': 945.7,
         'Delta': 100.72461722740061,
-        'Outliers': (945.7 - 50.3) / 945.7
+        'Outliers': 1 - (945.7 - 50.3) / 945.7
     }
     
     # Convert Outliers to percentage (0-100 scale) if needed
