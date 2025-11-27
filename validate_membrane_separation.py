@@ -30,13 +30,13 @@ from separate_membranes.data_io import standardise_points
 CONTINUE_LAST = False
 
 D_MAX_VALUES = [50, 100, 150, 200, 250]
-N_VALUES = [500, 1000, 1500, 2000, 2500]
-DENSITY_AUGMENT_ORDERS = [1, 2, 3, 4, 5]
+N_VALUES = [250, 500, 750, 1000]
+DENSITY_AUGMENT_ORDERS = [1, 3, 5]
 LAT_SIGMA_VALUES = [5, 10, 15, 20, 25]
 AX_SIGMA_VALUES = [5, 10, 15, 20, 25]
 DELTA_VALUES = [20, 40, 60, 80, 100]
 OUTLIERS_VALUES = [10, 20, 30, 40, 50]
-ITERATIONS = list(range(10))
+ITERATIONS = list(range(5))
 
 # Default parameters
 X_MAX = 3000
@@ -653,9 +653,9 @@ def create_summary_plots(results_df: pd.DataFrame, output_dir: Path):
     # Define reference values for vertical lines
     reference_values = {
         'D_max': (184.65352159975933 + 150.75916131010277) / 2,
-        'N': 1891.4,
+        'N': 945.7,
         'Delta': 100.72461722740061,
-        'Outliers': (1891.4 - 50.3) / 1891.4
+        'Outliers': (945.7 - 50.3) / 945.7
     }
     
     # Convert Outliers to percentage (0-100 scale) if needed
