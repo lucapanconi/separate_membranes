@@ -639,6 +639,14 @@ def create_summary_plots(results_df: pd.DataFrame, output_dir: Path):
     plt.style.use('seaborn-v0_8-talk')
     plt.rcParams['figure.figsize'] = (12, 8)
     
+    # Double the font sizes
+    plt.rcParams['font.size'] = 24
+    plt.rcParams['axes.labelsize'] = 28
+    plt.rcParams['axes.titlesize'] = 30
+    plt.rcParams['xtick.labelsize'] = 24
+    plt.rcParams['ytick.labelsize'] = 24
+    plt.rcParams['legend.fontsize'] = 22
+    
     # Define colors for each parameter
     param_colors = {
         'D_max': '#1f77b4',          # Blue
