@@ -36,7 +36,7 @@ LAT_SIGMA_VALUES = [5, 10, 15, 20, 25]
 AX_SIGMA_VALUES = [5, 10, 15, 20, 25]
 DELTA_VALUES = [40, 80, 120, 160, 200]
 OUTLIERS_VALUES = [5, 10, 15, 20, 25]
-ITERATIONS = list(range(5))
+ITERATIONS = list(range(10))
 
 # Default parameters
 X_MAX = 3000
@@ -696,7 +696,9 @@ def create_summary_plots(results_df: pd.DataFrame, output_dir: Path):
         ax.set_xlabel(param)
         ax.set_ylabel('Adjusted Rand Index')
         ax.set_title(f'ARI vs {param}')
-        ax.set_ylim(0, 1)
+        # Set lower bound to 0, let upper bound be automatic
+        ylim = ax.get_ylim()
+        ax.set_ylim(0, ylim[1])
         if param in reference_values:
             ax.axvline(x=reference_values[param], color='black', linestyle='--', 
                       linewidth=1.5, alpha=0.7, label=f'Reference: {reference_values[param]:.2f}')
